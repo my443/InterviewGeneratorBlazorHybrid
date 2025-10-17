@@ -1,0 +1,100 @@
+﻿@page "/questions"
+@using InterviewGeneratorBlazorHybrid.Models
+@using InterviewGeneratorBlazorHybrid.ViewModels
+@using InterviewGeneratorBlazorHybrid.Data
+
+@inject AppDbContextFactory ContextFactory
+@inject QuestionViewModel ViewModel
+
+
+<h3>Questions</h3>
+<NavLink class="btn btn-sm btn-primary" href="@($"/categories")">Categories</NavLink>
+@if (ViewModel.Categories == null)
+{
+    <p>Loading categories...</p>
+}
+else if (ViewModel == null)
+{
+    <p>Loading...</p>
+}
+else if (ViewModel.Category == null)
+{
+    <p>Category not found.</p>
+}
+else
+{
+    <div class="mb-3">
+        <label for="categorySelect" class="form-label">Select Category</label>
+        <select id="categorySelect" class="form-select" @onchange="OnCategoryChanged" value="@ViewModel.Category.Id">
+            @foreach (var cat in ViewModel.Categories)
+            {
+                <option value="@cat.Id" selected="@(cat.Id == ViewModel.Category.Id)">
+                    @cat.Name
+                </option>
+            }
+        </select>
+    </div>
+    <h3>Questions for @ViewModel.Category.Name</h3>
+
+
+    @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+    {
+        <div class="alert alert-danger">@ViewModel.ErrorMessage</div>
+    }
+
+    <EditForm Model="@ViewModel.QuestionModel" OnValidSubmit="@(() => ViewModel.SaveQuestion())">
+        <div class="mb-2">
+            <label>Question Text</label>
+            <InputText @bind-Value="ViewModel.QuestionModel.Text" class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label>Answer</label>
+            <InputText @bind-Value="ViewModel.QuestionModel.Answer" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary me-2">@((ViewModel.IsEditMode ? "Update" : "Add") + " Question")</button>
+        <button type="button" class="btn btn-secondary" @onclick="ViewModel.ResetForm">Cancel</button>
+    </EditForm>
+
+    <ul class="list-group mt-3">
+        @foreach (var q in ViewModel.Questions)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                    <strong>@q.Text</strong> <br />
+                    <em>@q.Answer</em>
+                </span>
+                <span>
+                    <button class="btn btn-sm btn-info me-1" @onclick="() => ViewModel.EditQuestion(q)">Edit</button>
+                    <button class="btn btn-sm btn-danger" @onclick="() => ViewModel.DeleteQuestion(q.Id)">Delete</button>
+                </span>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+
+
+    private Category? Category;
+    // private QuestionViewModel? ViewModel;
+
+    protected override void OnInitialized()
+    {
+        using var db = ContextFactory.CreateDbContext();
+        Category = db.Categories.FirstOrDefault(c => c.Id == ViewModel.CategoryId);
+        
+        if (Category != null)
+        {
+            ViewModel.ChangeCategory(ViewModel.CategoryId);
+        }
+    }
+
+    private async Task OnCategoryChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int newCategoryId) && newCategoryId != ViewModel?.Category.Id)
+        {
+            ViewModel.ChangeCategory(newCategoryId);
+            StateHasChanged();
+        }
+    }
+}
