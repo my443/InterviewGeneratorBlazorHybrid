@@ -86,3 +86,24 @@ h1:focus {
         padding-left: env(safe-area-inset-left);
     }
 }
+
+/* Footer layout: keep footer at bottom and span full width */
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main, .flex-grow-1 {
+    flex: 1 0 auto; /* allow main/content to grow and push footer to bottom */
+}
+
+.content {
+    flex: 1 0 auto;
+}
+
+/* ensure footer spans full width and sits at bottom */
+.footer-container {
+    width: 100%;
+    flex-shrink: 0;
+}
