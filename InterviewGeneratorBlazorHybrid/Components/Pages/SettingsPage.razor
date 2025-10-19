@@ -4,20 +4,19 @@
 @inject NavigationManager NavigationManager
 @inject AppDbContextFactory ContextFactory
 
-<h1>Interview Generator Settings</h1>
+<h3>Interview Generator Settings</h3>
 
 <p><span class="alert-warning">@GeneralMessage</span></p>
 <p><span class="alert-danger">@ErrorMessage</span></p>
 <p><span class="alert-success">@SuccessMessage</span></p>
 
 <p>Current Database: <b>@DisplayPath</b></p>
-<div class="page-center" style="align-content:center">
-    <div class="button-group" role="group" aria-label="Database options">
-        <button class="btn btn-success">Add New Database</button>
-        <button class="btn btn-success" @onclick="SelectDifferentDatabase">Select A Current Database</button>
-        <button class="btn btn-success">Create Sample Database</button>
+<div class="container text-center my-5">
+    <div class="d-flex justify-content-between px-5" role="group" aria-label="Database options">
+        <button class="btn btn-success flex-fill mx-2">Add New Database</button>
+        <button class="btn btn-success flex-fill mx-2" @onclick="SelectDifferentDatabase">Select A Current Database</button>
+        <button class="btn btn-success flex-fill mx-2">Create Sample Database</button>
     </div>
 </div>
-<h3>Settings</h3>
 
 

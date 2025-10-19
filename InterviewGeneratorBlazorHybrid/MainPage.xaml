@@ -3,9 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:InterviewGeneratorBlazorHybrid"
              xmlns:components="clr-namespace:InterviewGeneratorBlazorHybrid.Components"
-             x:Class="InterviewGeneratorBlazorHybrid.MainPage">
+             x:Class="InterviewGeneratorBlazorHybrid.MainPage"
+>
 
-    <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+    <BlazorWebView x:Name="blazorWebView" 
+                   HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
             <RootComponent Selector="#app" ComponentType="{x:Type components:Routes}" />
         </BlazorWebView.RootComponents>
