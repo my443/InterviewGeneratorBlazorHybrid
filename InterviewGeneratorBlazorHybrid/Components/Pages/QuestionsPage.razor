@@ -5,6 +5,7 @@
 
 @inject AppDbContextFactory ContextFactory
 @inject QuestionViewModel ViewModel
+@inject NavigationManager Navigation
 
 
 <h3>Questions</h3>
@@ -80,6 +81,11 @@ else
 
     protected override void OnInitialized()
     {
+        if (Preferences.Get("DatabaseFilePath", "Not Set") == "Not Set")
+        {
+            Navigation.NavigateTo($"/settings");
+        }
+
         using var db = ContextFactory.CreateDbContext();
         Category = db.Categories.FirstOrDefault(c => c.Id == ViewModel.CategoryId);
         

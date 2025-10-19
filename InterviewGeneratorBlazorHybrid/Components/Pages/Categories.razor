@@ -66,7 +66,13 @@ else
 }
 
 @code {
-
+    protected override void OnInitialized()
+    {
+        if (Preferences.Get("DatabaseFilePath", "Not Set") == "Not Set")
+        {
+            Navigation.NavigateTo($"/settings");
+        }
+    }
     public void GoToQuestions(int categoryId)
     {
         QuestionViewModel.ChangeCategory(categoryId);

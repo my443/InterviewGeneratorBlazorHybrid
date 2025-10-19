@@ -4,6 +4,13 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
 {
     public partial class InterviewList
     {
+        protected override void OnInitialized()
+        {
+            if (Preferences.Get("DatabaseFilePath", "Not Set") == "Not Set")
+            {
+                Navigation.NavigateTo($"/settings");
+            }
+        }
         private void AddNewInterview()
         {
             ViewModel.AddNewInterview();

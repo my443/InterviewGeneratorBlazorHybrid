@@ -160,7 +160,13 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public bool IsDatabaseAvailable()
         {
             var integrityCheck = new AppDbIntegrityCheck(_contextFactory);
-            DatabaseIsAvailable = integrityCheck.IsValidDatabase();
+            if (Preferences.Get("DatabaseFilePath", "Not Set") == "Not Set")
+            {
+                DatabaseIsAvailable = false;
+            }
+            else { 
+                DatabaseIsAvailable = integrityCheck.IsValidDatabase();
+            }
             return DatabaseIsAvailable;
         }
     }

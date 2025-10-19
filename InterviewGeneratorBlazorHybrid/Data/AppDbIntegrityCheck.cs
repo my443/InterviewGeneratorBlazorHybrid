@@ -8,8 +8,6 @@ namespace InterviewGeneratorBlazorHybrid.Data
         public AppDbContext _context { get; set; }
         public AppDbIntegrityCheck(AppDbContextFactory contextFactory) {
             _contextFactory = contextFactory;
-
-
         }
         public bool IsValidDatabase()
         {
