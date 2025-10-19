@@ -25,13 +25,23 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public int SelectedInterviewId { get; set; }
         public string InterviewName { get; set; } = string.Empty;
         public DateTime InterviewDate { get; set; } = DateTime.Today;
+        public bool DatabaseIsAvailable { get; set; } = false; 
 
         public InterviewViewModel(AppDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
-            _context = _contextFactory.CreateDbContext();
-            LoadCategories();
-            LoadInterviews();
+
+            if (!IsDatabaseAvailable())
+            {
+                DatabaseIsAvailable = false;
+            }
+            else
+            {
+                DatabaseIsAvailable = true;
+                _context = _contextFactory.CreateDbContext();
+                LoadCategories();
+                LoadInterviews();
+            }
         }
 
         public void LoadCategories()
@@ -145,6 +155,13 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         {
             var wordHelper = new Helpers.MSWordHelper(_contextFactory);
             wordHelper.GenerateInterviewDoc(interviewId);
+        }
+
+        public bool IsDatabaseAvailable()
+        {
+            var integrityCheck = new AppDbIntegrityCheck(_contextFactory);
+            DatabaseIsAvailable = integrityCheck.IsValidDatabase();
+            return DatabaseIsAvailable;
         }
     }
 }

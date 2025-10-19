@@ -17,8 +17,8 @@ namespace InterviewGeneratorBlazorHybrid
                 });
 
             // RegisterViewModels
-            var connectionString = "Data Source=c:\\temp\\app.db";
-            builder.Services.AddSingleton(new AppDbContextFactory(connectionString));
+            //var connectionString = "Data Source=c:\\temp\\app.db";
+            builder.Services.AddSingleton(new AppDbContextFactory());
 
             builder.Services.AddScoped<CategoryViewModel>();
             builder.Services.AddScoped<QuestionViewModel>();

@@ -10,16 +10,21 @@ namespace InterviewGeneratorBlazorHybrid.Data
     public class AppDbContextFactory
     {
         private readonly string _connectionString;
+        public bool IsDatabaseAvailable { get; set; }
 
-        public AppDbContextFactory(string connectionString)
+        public AppDbContextFactory()
         {
-            _connectionString = connectionString;
+            //_connectionString = $"Data Source={Preferences.Get("DatabaseFilePath", "")}";
+            //_connectionString = "Data Source=c:\\temp\\app.db";
         }
+
 
         public AppDbContext CreateDbContext()
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlite(_connectionString);
+
+            string connectionString = $"Data Source={Preferences.Get("DatabaseFilePath", "")}";
+            optionsBuilder.UseSqlite(connectionString);
 
             var context = new AppDbContext(optionsBuilder.Options);
 
