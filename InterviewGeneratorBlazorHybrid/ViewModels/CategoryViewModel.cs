@@ -7,23 +7,34 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
     public class CategoryViewModel
     {
         private readonly AppDbContextFactory _contextFactory;
+        private AppDbContext _context;
+
         private readonly string _sqliteDbPath;
+        public List<Category> Categories { get; set; } = new();
+        public Category CategoryModel { get; set; } = new();
+        public bool IsEditMode { get; set; } = false;
+        public bool IsAddMode { get; set; } = false;
+        public string? ErrorMessage { get; set; }
+
 
         public CategoryViewModel(AppDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
+            _context = _contextFactory.CreateDbContext();
             LoadCategories();
         }
 
-        public List<Category> Categories { get; set; } = new();
-        public Category CategoryModel { get; set; } = new();
-        public bool IsEditMode { get; set; } = false;
-        public string? ErrorMessage { get; set; }
 
         public void LoadCategories()
         {
-            using var db = _contextFactory.CreateDbContext();
-            Categories = db.Categories.Include(c => c.Questions).ToList();
+            Categories = _context.Categories.Include(c => c.Questions).ToList();
+        }
+
+        public void AddCategory()
+        {
+            IsEditMode = true;
+            IsAddMode = true;
+            CategoryModel = new Category();
         }
 
         public void EditCategory(Category category)
@@ -36,6 +47,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                 Description = category.Description,
                 Questions = category.Questions.ToList()
             };
+
+            //_context.SaveChanges(CategoryModel);
         }
 
         public void DeleteCategory(int id)
@@ -57,23 +70,20 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public void SaveCategory()
         {
             ErrorMessage = null;
-            using var db = _contextFactory.CreateDbContext();
+            //using var db = _contextFactory.CreateDbContext();
             if (string.IsNullOrWhiteSpace(CategoryModel.Name))
             {
                 ErrorMessage = "Name is required.";
                 return;
             }
 
-            if (IsEditMode)
+            var cat = _context.Categories.Find(CategoryModel.Id);
+            if (cat != null)
             {
-                var cat = db.Categories.Find(CategoryModel.Id);
-                if (cat != null)
-                {
-                    cat.Name = CategoryModel.Name;
-                    cat.Description = CategoryModel.Description;
-                    db.SaveChanges();
-                    LoadCategories();
-                }
+                cat.Name = CategoryModel.Name;
+                cat.Description = CategoryModel.Description;
+                _context.SaveChanges();
+                LoadCategories();
             }
             else
             {
@@ -83,8 +93,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                     Description = CategoryModel.Description,
                     Questions = new List<Question>()
                 };
-                db.Categories.Add(newCategory);
-                db.SaveChanges();
+                _context.Categories.Add(newCategory);
+                _context.SaveChanges();
                 LoadCategories();
             }
             ResetForm();
@@ -94,6 +104,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         {
             CategoryModel = new Category();
             IsEditMode = false;
+            IsAddMode = false;
             ErrorMessage = null;
         }
     }
