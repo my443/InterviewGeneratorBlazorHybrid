@@ -6,6 +6,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
     public class QuestionViewModel
     {
         private readonly AppDbContextFactory _contextFactory;
+        private AppDbContext _context;
+
         private int _categoryId;
 
         public List<Question> Questions { get; set; } = new();
@@ -25,50 +27,55 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                 } 
             }
         }
+        public bool IsAddMode { get; set; } = false;
 
 
         public QuestionViewModel(AppDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
+            _context = _contextFactory.CreateDbContext();
             //_categoryId = categoryId;
             LoadCategories();
             LoadQuestions();
         }
         public void LoadQuestions()
         {
-            using var db = _contextFactory.CreateDbContext();
-            Questions = db.Questions
+            Questions = _context.Questions
                 .Where(q => q.CategoryId == _categoryId)
                 .ToList();
         }
 
         public void LoadCategories()
         {
-            using var db = _contextFactory.CreateDbContext();
-            Category = db.Categories.Find(_categoryId) ?? new Category();
-            Categories = db.Categories.ToList();
+            Category = _context.Categories.Find(_categoryId) ?? new Category();
+            Categories = _context.Categories.ToList();
         }
 
         public void EditQuestion(Question question)
         {
             IsEditMode = true;
+
             QuestionModel = new Question
             {
                 Id = question.Id,
                 Text = question.Text,
-                Answer = question.Answer,
+                Answer = "-",
                 CategoryId = question.CategoryId
             };
         }
 
+        public void AddNewQuestion() {
+            IsEditMode = true;
+            IsAddMode = true;
+            QuestionModel = new Question();
+        }
         public void DeleteQuestion(int id)
         {
-            using var db = _contextFactory.CreateDbContext();
-            var q = db.Questions.Find(id);
+            var q = _context.Questions.Find(id);
             if (q != null)
             {
-                db.Questions.Remove(q);
-                db.SaveChanges();
+                _context.Questions.Remove(q);
+                _context.SaveChanges();
                 LoadQuestions();
             }
             if (IsEditMode && QuestionModel.Id == id)
@@ -80,7 +87,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public void SaveQuestion()
         {
             ErrorMessage = null;
-            using var db = _contextFactory.CreateDbContext();
+            QuestionModel.Answer = "-";                 // So that the answer is always reset to "-"
+
             if (string.IsNullOrWhiteSpace(QuestionModel.Text))
             {
                 ErrorMessage = "Question text is required.";
@@ -92,14 +100,14 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                 return;
             }
 
-            if (IsEditMode)
+            if (!IsAddMode)
             {
-                var q = db.Questions.Find(QuestionModel.Id);
+                var q = _context.Questions.Find(QuestionModel.Id);
                 if (q != null)
                 {
                     q.Text = QuestionModel.Text;
-                    q.Answer = QuestionModel.Answer;
-                    db.SaveChanges();
+                    q.Answer = "-";
+                    _context.SaveChanges();
                     LoadQuestions();
                 }
             }
@@ -108,11 +116,11 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                 var newQuestion = new Question
                 {
                     Text = QuestionModel.Text,
-                    Answer = QuestionModel.Answer,
+                    Answer = "-",
                     CategoryId = _categoryId
                 };
-                db.Questions.Add(newQuestion);
-                db.SaveChanges();
+                _context.Questions.Add(newQuestion);
+                _context.SaveChanges();
                 LoadQuestions();
             }
             ResetForm();
@@ -122,6 +130,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         {
             QuestionModel = new Question { CategoryId = _categoryId };
             IsEditMode = false;
+            IsAddMode = false;
             ErrorMessage = null;
         }
 

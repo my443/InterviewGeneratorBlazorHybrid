@@ -9,10 +9,10 @@
 
 
 <h3>Questions</h3>
-<NavLink class="btn btn-sm btn-primary" href="@($"/categories")">Categories</NavLink>
+@* <NavLink class="btn btn-sm btn-primary" href="@($"/categories")">Categories</NavLink> *@
 @if (ViewModel.Categories == null)
 {
-    <p>Loading categories...</p>
+    <p>Loading Core Competencies...</p>
 }
 else if (ViewModel == null)
 {
@@ -20,57 +20,66 @@ else if (ViewModel == null)
 }
 else if (ViewModel.Category == null)
 {
-    <p>Category not found.</p>
+    <p>Core Competency not found.</p>
 }
 else
 {
-    <div class="mb-3">
-        <label for="categorySelect" class="form-label">Select Category</label>
-        <select id="categorySelect" class="form-select" @onchange="OnCategoryChanged" value="@ViewModel.Category.Id">
-            @foreach (var cat in ViewModel.Categories)
-            {
-                <option value="@cat.Id" selected="@(cat.Id == ViewModel.Category.Id)">
-                    @cat.Name
-                </option>
-            }
-        </select>
-    </div>
-    <h3>Questions for @ViewModel.Category.Name</h3>
-
-
-    @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+    @if (ViewModel.IsEditMode)
     {
-        <div class="alert alert-danger">@ViewModel.ErrorMessage</div>
+        <h5>@((ViewModel.IsAddMode ? "Add" : "Update") + " Question") for <u>@ViewModel.Category.Name</u></h5>
+        <EditForm Model="@ViewModel.QuestionModel" OnValidSubmit="@(() => ViewModel.SaveQuestion())">
+            <div class="mb-2">
+                <InputText @bind-Value="ViewModel.QuestionModel.Text" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary me-2">Save Question</button>
+            <button type="button" class="btn btn-secondary" @onclick="ViewModel.ResetForm">Cancel</button>
+        </EditForm>
     }
+    else
+    {
+        <h5>Select Core Competency</h5>
+        <div class="mb-3">
 
-    <EditForm Model="@ViewModel.QuestionModel" OnValidSubmit="@(() => ViewModel.SaveQuestion())">
-        <div class="mb-2">
-            <label>Question Text</label>
-            <InputText @bind-Value="ViewModel.QuestionModel.Text" class="form-control" />
+            <select id="categorySelect" class="form-select" @onchange="OnCategoryChanged" value="@ViewModel.Category.Id">
+                @foreach (var cat in ViewModel.Categories)
+                {
+                    <option value="@cat.Id" selected="@(cat.Id == ViewModel.Category.Id)">
+                        @cat.Name
+                    </option>
+                }
+            </select>
         </div>
-        <div class="mb-2">
-            <label>Answer</label>
-            <InputText @bind-Value="ViewModel.QuestionModel.Answer" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary me-2">@((ViewModel.IsEditMode ? "Update" : "Add") + " Question")</button>
-        <button type="button" class="btn btn-secondary" @onclick="ViewModel.ResetForm">Cancel</button>
-    </EditForm>
 
-    <ul class="list-group mt-3">
-        @foreach (var q in ViewModel.Questions)
+        @if (ViewModel.Category.Name != "")
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>
-                    <strong>@q.Text</strong> <br />
-                    <em>@q.Answer</em>
-                </span>
-                <span>
-                    <button class="btn btn-sm btn-info me-1" @onclick="() => ViewModel.EditQuestion(q)">Edit</button>
-                    <button class="btn btn-sm btn-danger" @onclick="() => ViewModel.DeleteQuestion(q.Id)">Delete</button>
-                </span>
-            </li>
+            <div class="mb-3">
+                <button class="btn btn-success" @onclick="ViewModel.AddNewQuestion">
+                    <i class="bi bi-plus-circle"></i> Add New Question
+                </button>
+            </div>
+            <h3>Questions for @ViewModel.Category.Name</h3>
         }
-    </ul>
+
+        @if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+        {
+            <div class="alert alert-danger">@ViewModel.ErrorMessage</div>
+        }
+
+        <ul class="list-group mt-3">
+            @foreach (var q in ViewModel.Questions)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <strong>@q.Text</strong> <br />
+                    </span>
+                    <span>
+                        <button class="btn btn-sm btn-info me-1" @onclick="() => ViewModel.EditQuestion(q)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => ViewModel.DeleteQuestion(q.Id)">Delete</button>
+                    </span>
+                </li>
+            }
+        </ul>
+    }
 }
 
 @code {
@@ -88,7 +97,7 @@ else
 
         using var db = ContextFactory.CreateDbContext();
         Category = db.Categories.FirstOrDefault(c => c.Id == ViewModel.CategoryId);
-        
+
         if (Category != null)
         {
             ViewModel.ChangeCategory(ViewModel.CategoryId);
