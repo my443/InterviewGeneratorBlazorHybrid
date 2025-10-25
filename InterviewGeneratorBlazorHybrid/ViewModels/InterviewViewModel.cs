@@ -25,6 +25,16 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public int SelectedInterviewId { get; set; }
         public string InterviewName { get; set; } = string.Empty;
         public DateTime InterviewDate { get; set; } = DateTime.Today;
+        public bool InterviewIsActive { get; set; } = true;
+        public string InterviewIsActiveString
+        {
+            get => Interview?.IsActive.ToString().ToLower() ?? "true";
+            set
+            {
+                if (Interview != null && bool.TryParse(value, out var b))
+                    Interview.IsActive = b;
+            }
+        }
         public bool DatabaseIsAvailable { get; set; } = false; 
 
         public InterviewViewModel(AppDbContextFactory contextFactory)
@@ -46,15 +56,14 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         public void LoadCategories()
         {
-            using var db = _contextFactory.CreateDbContext();
-            Categories = db.Categories.ToList();
+            Categories = _context.Categories.ToList();
         }
 
         public void LoadQuestionsForCategory()
         {
             if (SelectedCategoryId == null) return;
-            using var db = _contextFactory.CreateDbContext();
-            AvailableQuestions = db.Questions
+
+            AvailableQuestions = _context.Questions
                 .Include(q => q.Category)
                 .Where(q => q.CategoryId == SelectedCategoryId)
                 .ToList();
@@ -62,17 +71,15 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         public void LoadInterviews()
         {
-            using var db = _contextFactory.CreateDbContext();
 
-            Interviews = db.Interviews
+            Interviews = _context.Interviews
                 .Include(i => i.Questions)
                 .OrderByDescending(i => i.DateCreated)
                 .ToList();
         }
 
         public void AddNewInterview()
-        {
-            AppDbContext context = _contextFactory.CreateDbContext();    
+        { 
             InterviewName = "<<New Interview>>";
             InterviewDate = DateTime.Today;
 
@@ -80,11 +87,12 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             {
                 InterviewName = InterviewName,
                 DateCreated = InterviewDate,
+                IsActive = true,
                 Questions = new List<Question>()
             };
 
-            context.Interviews.Add(interview);
-            context.SaveChanges();
+            _context.Interviews.Add(interview);
+            _context.SaveChanges();
             
             Interview = interview;
         }
@@ -92,6 +100,9 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public void SaveInterview()
         {
             //using var db = _contextFactory.CreateDbContext();           
+            Interview.InterviewName = InterviewName;
+            Interview.DateCreated = InterviewDate;
+            //Interview.IsActive = InterviewIsActive;
 
             _context.SaveChanges();
         }
@@ -106,19 +117,18 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             {
                 InterviewName = Interview.InterviewName;
                 InterviewDate = Interview.DateCreated;
-                // Optionally, set other properties as needed
+                InterviewIsActive = Interview.IsActive;
             }
         }
         public void DeleteInterview(int id)
         {
             try
             {
-                using var db = _contextFactory.CreateDbContext();
-                var interview = db.Interviews.Find(id);
+                var interview = _context.Interviews.Find(id);
                 if (interview != null)
                 {
-                    db.Interviews.Remove(interview);
-                    db.SaveChanges();
+                    _context.Interviews.Remove(interview);
+                    _context.SaveChanges();
                     LoadInterviews();
                 }
             }

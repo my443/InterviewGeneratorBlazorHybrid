@@ -59,5 +59,14 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
             int interviewId = InterviewId ?? 0;
             ViewModel.GenerateInterviewDoc(interviewId);
         }
+
+        private void SaveInterviewMetaData()
+        {
+            if (ViewModel.Interview != null)
+            {
+                ViewModel.SaveInterview();
+            }
+
+        }
     }
 }

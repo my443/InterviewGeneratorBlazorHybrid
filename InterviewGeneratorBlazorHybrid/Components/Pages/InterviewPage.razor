@@ -13,11 +13,11 @@
 </button> *@
 
 
-<div class="mb-3">
+@* <div class="mb-3">
     <button class="btn btn-success" @onclick="GenerateInterviewDoc">
         <i class="bi bi-plus-circle"></i> Generate Interview Document
     </button>
-</div>
+</div> *@
 <div class="mb-3">
     <label>Interview Name</label>
     <InputText class="form-control" @bind-Value="ViewModel.InterviewName" />
@@ -26,6 +26,16 @@
     <label>Interview Date</label>
     <InputDate class="form-control" @bind-Value="ViewModel.InterviewDate" />
 </div>
+<div class="mb-3">
+    <label>Interview Status</label>
+    <select class="form-select" @bind="ViewModel.InterviewIsActiveString">
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+    </select>
+</div>
+<button class="btn btn-success" @onclick="SaveInterviewMetaData">
+    <i class="bi bi-plus-circle"></i> Save
+</button>
 
 <div class="mb-3">
     <label>Select Category</label>
@@ -65,7 +75,6 @@
         {
             <li class="list-group-item">
                 <strong>@q.Text </strong>(@q.Category.Name)<br />
-                <em>@q.Answer</em>
                 <button class="btn btn-sm btn-danger" @onclick="() => DeleteQuestion(q.Id)">
                     <i class="bi bi-trash"></i> Delete
                 </button>
