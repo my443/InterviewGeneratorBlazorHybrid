@@ -131,7 +131,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             QuestionModel = new Question { CategoryId = _categoryId };
             IsEditMode = false;
             IsAddMode = false;
-            ErrorMessage = null;
+            ErrorMessage = null;            
         }
 
         public void ChangeCategory(int categoryId)

@@ -13,8 +13,11 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
         }
         private void AddNewInterview()
         {
+            ViewModel.IsAddMode = true;
+            ViewModel.IsEditMode = true;
             ViewModel.AddNewInterview();
-            Navigation.NavigateTo($"/interview/{ViewModel.Interview.Id}");
+            //Navigation.NavigateTo($"/interview/{ViewModel.Interview.Id}");
+            //StateHasChanged();
         }
 
         private async Task DeleteInterviewWithConfirm(Interview interview)

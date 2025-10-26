@@ -22,7 +22,7 @@ namespace InterviewGeneratorBlazorHybrid
 
             builder.Services.AddScoped<CategoryViewModel>();
             builder.Services.AddScoped<QuestionViewModel>();
-            builder.Services.AddTransient<InterviewViewModel>();
+            builder.Services.AddScoped<InterviewViewModel>();
 
             builder.Services.AddMauiBlazorWebView();
 

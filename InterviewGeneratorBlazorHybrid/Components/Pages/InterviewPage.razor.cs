@@ -8,15 +8,15 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
         [Parameter]
         public int? InterviewId { get; set; }
 
-        private InterviewViewModel ViewModel;
+        //private InterviewViewModel ViewModel;
 
         protected override void OnInitialized()
         {
-            ViewModel = new InterviewViewModel(ContextFactory);
-            if (InterviewId.HasValue)
-            {
-                ViewModel.LoadInterviewById(InterviewId.Value);
-            }
+            //ViewModel = new InterviewViewModel(ContextFactory);
+            //if (InterviewId.HasValue)
+            //{
+            //    ViewModel.LoadInterviewById(InterviewId.Value);
+            //}
         }
 
         private void OnCategoryChanged(ChangeEventArgs e)

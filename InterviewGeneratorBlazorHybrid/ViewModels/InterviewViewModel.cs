@@ -35,6 +35,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                     Interview.IsActive = b;
             }
         }
+        public bool IsEditMode { get; set; } = false;
+        public bool IsAddMode { get; set; } = false;
         public bool DatabaseIsAvailable { get; set; } = false; 
 
         public InterviewViewModel(AppDbContextFactory contextFactory)
@@ -82,6 +84,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         { 
             InterviewName = "<<New Interview>>";
             InterviewDate = DateTime.Today;
+            IsAddMode = true;
+            IsEditMode = true;
 
             var interview = new Interview
             {
@@ -94,7 +98,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             _context.Interviews.Add(interview);
             _context.SaveChanges();
             
-            Interview = interview;
+            Interview = interview;            
         }
 
         public void SaveInterview()
@@ -178,6 +182,14 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                 DatabaseIsAvailable = integrityCheck.IsValidDatabase();
             }
             return DatabaseIsAvailable;
+        }
+
+        public void ResetForm()
+        {
+            Interview = new Interview();
+            IsEditMode = false;
+            IsAddMode = false;
+            ErrorMessage = null;
         }
     }
 }

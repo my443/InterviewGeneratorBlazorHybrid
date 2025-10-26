@@ -5,8 +5,9 @@
 @using InterviewGeneratorBlazorHybrid.Data
 
 @inject AppDbContextFactory ContextFactory
+@inject InterviewViewModel ViewModel
 
-<h3>Build Interview</h3>
+<h3>Build Interview</h3>@ViewModel.IsAddMode @ViewModel.IsEditMode
 @* <button class="btn btn-success mb-3" @onclick="SaveInterview"
         disabled="@(string.IsNullOrWhiteSpace(ViewModel.InterviewName) || !ViewModel.InterviewQuestions.Any())">
     Save Interview
@@ -18,67 +19,79 @@
         <i class="bi bi-plus-circle"></i> Generate Interview Document
     </button>
 </div> *@
-<div class="mb-3">
-    <label>Interview Name</label>
-    <InputText class="form-control" @bind-Value="ViewModel.InterviewName" />
-</div>
-<div class="mb-3">
-    <label>Interview Date</label>
-    <InputDate class="form-control" @bind-Value="ViewModel.InterviewDate" />
-</div>
-<div class="mb-3">
-    <label>Interview Status</label>
-    <select class="form-select" @bind="ViewModel.InterviewIsActiveString">
-        <option value="true">Active</option>
-        <option value="false">Inactive</option>
-    </select>
-</div>
-<button class="btn btn-success" @onclick="SaveInterviewMetaData">
-    <i class="bi bi-plus-circle"></i> Save
-</button>
 
-<div class="mb-3">
-    <label>Select Category</label>
-    <select class="form-select" @onchange="OnCategoryChanged">
-        <option value="">-- Select Category --</option>
-        @foreach (var cat in ViewModel.Categories)
-        {
-            <option value="@cat.Id" selected="@(ViewModel.SelectedCategoryId == cat.Id)">
-                @cat.Name
-            </option>
-        }
-    </select>
-</div>
+@if (!ViewModel.IsEditMode)
+{
+    <InterviewList />
+}
 
-@if (ViewModel.SelectedCategoryId != null)
+@if (ViewModel.IsEditMode)
+{
+    <EditForm Model="@ViewModel.Interview" OnValidSubmit="@(() => ViewModel.SaveInterview())">
+        <div class="mb-3">
+            <label>Interview Name</label>
+            <InputText class="form-control" @bind-Value="ViewModel.InterviewName" />
+        </div>
+        <div class="mb-3">
+            <label>Interview Date</label>
+            <InputDate class="form-control" @bind-Value="ViewModel.InterviewDate" />
+        </div>
+        <div class="mb-3">
+            <label>Interview Status</label>
+            <select class="form-select" @bind="ViewModel.InterviewIsActiveString">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary me-2">Save Interview Data</button>
+        <button type="button" class="btn btn-secondary" @onclick="ViewModel.ResetForm">Cancel</button>
+    </EditForm>
+}
+else
 {
     <div class="mb-3">
-        <label>Select Question</label>
-        <select class="form-select" @onchange="OnQuestionChanged">
-            <option value="">-- Select Question --</option>
-            @foreach (var q in ViewModel.AvailableQuestions)
+        <label>Select Category</label>
+        <select class="form-select" @onchange="OnCategoryChanged">
+            <option value="">-- Select Category --</option>
+            @foreach (var cat in ViewModel.Categories)
             {
-                <option value="@q.Id" selected="@(ViewModel.SelectedQuestionId == q.Id)">
-                    @q.Text
+                <option value="@cat.Id" selected="@(ViewModel.SelectedCategoryId == cat.Id)">
+                    @cat.Name
                 </option>
             }
         </select>
-        <button class="btn btn-primary mt-2" @onclick="AddQuestion" disabled="@(ViewModel.SelectedQuestionId == null)">Add to Interview</button>
     </div>
-}
 
-@if (ViewModel.Interview.Questions.Any())
-{
-    <h4>Interview Questions</h4>
-    <ul class="list-group">
-        @foreach (var q in ViewModel.Interview.Questions)
-        {
-            <li class="list-group-item">
-                <strong>@q.Text </strong>(@q.Category.Name)<br />
-                <button class="btn btn-sm btn-danger" @onclick="() => DeleteQuestion(q.Id)">
-                    <i class="bi bi-trash"></i> Delete
-                </button>
-            </li>
-        }
-    </ul>
+    @if (ViewModel.SelectedCategoryId != null)
+    {
+        <div class="mb-3">
+            <label>Select Question</label>
+            <select class="form-select" @onchange="OnQuestionChanged">
+                <option value="">-- Select Question --</option>
+                @foreach (var q in ViewModel.AvailableQuestions)
+                {
+                    <option value="@q.Id" selected="@(ViewModel.SelectedQuestionId == q.Id)">
+                        @q.Text
+                    </option>
+                }
+            </select>
+            <button class="btn btn-primary mt-2" @onclick="AddQuestion" disabled="@(ViewModel.SelectedQuestionId == null)">Add to Interview</button>
+        </div>
+    }
+
+    @if (ViewModel.Interview.Questions.Any())
+    {
+        <h4>Interview Questions</h4>
+        <ul class="list-group">
+            @foreach (var q in ViewModel.Interview.Questions)
+            {
+                <li class="list-group-item">
+                    <strong>@q.Text </strong>(@q.Category.Name)<br />
+                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteQuestion(q.Id)">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </li>
+            }
+        </ul>
+    }
 }
