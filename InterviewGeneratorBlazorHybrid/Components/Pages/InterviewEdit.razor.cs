@@ -1,9 +1,10 @@
-﻿using InterviewGeneratorBlazorHybrid.ViewModels;
-using Microsoft.AspNetCore.Components;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace InterviewGeneratorBlazorHybrid.Components.Pages
 {
-    public partial class InterviewPage
+    public partial class InterviewEdit
     {
         // ensure the component re-renders when the viewmodel state changes
         protected override void OnInitialized()

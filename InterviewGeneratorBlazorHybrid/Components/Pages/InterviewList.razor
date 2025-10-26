@@ -58,9 +58,9 @@ else
                     </td>
                     <td>@interview.Questions.Count</td>
                     <td>
-                        <NavLink class="btn btn-sm btn-info me-2" href="@($"/interview/{interview.Id}")">
-                            <i class="bi bi-pencil"></i> Edit
-                        </NavLink>
+                        <button class="btn btn-sm btn-info" @onclick="() => EditInterview(interview)">
+                             Edit
+                        </button>
                         <button class="btn btn-sm btn-danger" @onclick="() => DeleteInterviewWithConfirm(interview)">
                             <i class="bi bi-trash"></i> Delete
                         </button>

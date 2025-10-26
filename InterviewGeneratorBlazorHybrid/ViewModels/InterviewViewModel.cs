@@ -11,33 +11,75 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         private readonly AppDbContextFactory _contextFactory;
         public AppDbContext _context { get; set; }
 
-        // For the list
-        public List<Interview> Interviews { get; set; } = new();
-        // For the single 'Interview' View
-        public Interview Interview { get; set; } = new();
+        // Change notification
+        public event Action? OnChange;
+        private void NotifyStateChanged() => OnChange?.Invoke();
 
-        public List<Category> Categories { get; set; } = new();
-        public List<Question> AvailableQuestions { get; set; } = new();
-        
-        public string? ErrorMessage { get; set; }
-        public int? SelectedCategoryId { get; set; }
-        public int? SelectedQuestionId { get; set; }
-        public int SelectedInterviewId { get; set; }
-        public string InterviewName { get; set; } = string.Empty;
-        public DateTime InterviewDate { get; set; } = DateTime.Today;
-        public bool InterviewIsActive { get; set; } = true;
+        // SetProperty helper
+        private void SetProperty<T>(ref T field, T value)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            field = value;
+            NotifyStateChanged();
+        }
+
+        // For the list
+        private List<Interview> _interviews = new();
+        public List<Interview> Interviews { get => _interviews; set => SetProperty(ref _interviews, value); }
+
+        // For the single 'Interview' View
+        private Interview _interview = new();
+        public Interview Interview { get => _interview; set => SetProperty(ref _interview, value); }
+
+        private List<Category> _categories = new();
+        public List<Category> Categories { get => _categories; set => SetProperty(ref _categories, value); }
+
+        private List<Question> _availableQuestions = new();
+        public List<Question> AvailableQuestions { get => _availableQuestions; set => SetProperty(ref _availableQuestions, value); }
+
+        private string? _errorMessage;
+        public string? ErrorMessage { get => _errorMessage; set => SetProperty(ref _errorMessage, value); }
+
+        private int? _selectedCategoryId;
+        public int? SelectedCategoryId { get => _selectedCategoryId; set => SetProperty(ref _selectedCategoryId, value); }
+
+        private int? _selectedQuestionId;
+        public int? SelectedQuestionId { get => _selectedQuestionId; set => SetProperty(ref _selectedQuestionId, value); }
+
+        private int _selectedInterviewId;
+        public int SelectedInterviewId { get => _selectedInterviewId; set => SetProperty(ref _selectedInterviewId, value); }
+
+        private string _interviewName = string.Empty;
+        public string InterviewName { get => _interviewName; set => SetProperty(ref _interviewName, value); }
+
+        private DateTime _interviewDate = DateTime.Today;
+        public DateTime InterviewDate { get => _interviewDate; set => SetProperty(ref _interviewDate, value); }
+
+        private bool _interviewIsActive = true;
+        public bool InterviewIsActive { get => _interviewIsActive; set => SetProperty(ref _interviewIsActive, value); }
+
         public string InterviewIsActiveString
         {
             get => Interview?.IsActive.ToString().ToLower() ?? "true";
             set
             {
                 if (Interview != null && bool.TryParse(value, out var b))
+                {
                     Interview.IsActive = b;
+                    NotifyStateChanged();
+                }
             }
         }
-        public bool IsEditMode { get; set; } = false;
-        public bool IsAddMode { get; set; } = false;
-        public bool DatabaseIsAvailable { get; set; } = false; 
+
+        private bool _isEditMode = false;
+        public bool IsEditMode { get => _isEditMode; set => SetProperty(ref _isEditMode, value); }
+
+        private bool _isAddMode = false;
+        public bool IsAddMode { get => _isAddMode; set => SetProperty(ref _isAddMode, value); }
+
+        private bool _databaseIsAvailable = false;
+        public bool DatabaseIsAvailable { get => _databaseIsAvailable; set => SetProperty(ref _databaseIsAvailable, value); }
+
 
         public InterviewViewModel(AppDbContextFactory contextFactory)
         {
@@ -98,7 +140,9 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             _context.Interviews.Add(interview);
             _context.SaveChanges();
             
-            Interview = interview;            
+            Interview = interview;
+            LoadInterviews();
+            NotifyStateChanged();
         }
 
         public void SaveInterview()
@@ -109,6 +153,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             //Interview.IsActive = InterviewIsActive;
 
             _context.SaveChanges();
+            NotifyStateChanged();
         }
         public void LoadInterviewById(int interviewId)
         {
@@ -123,6 +168,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
                 InterviewDate = Interview.DateCreated;
                 InterviewIsActive = Interview.IsActive;
             }
+            NotifyStateChanged();
         }
         public void DeleteInterview(int id)
         {
@@ -140,6 +186,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             {
                 ErrorMessage = $"Error deleting interview: {ex.Message}";
             }
+            NotifyStateChanged();
         }
 
         public void AddQuestionToInterview()
@@ -151,8 +198,10 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             if (question != null && !Interview.Questions.Any(q => q.Id == question.Id))
             {
                 Interview.Questions.Add(question);
+                SaveInterview();
+                NotifyStateChanged();
             }
-            SaveInterview();
+
         }
 
         public void RemoveQuestionFromInterview(int questionId)
@@ -162,7 +211,9 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             {
                 Interview.Questions.Remove(question);
                 SaveInterview();
+                NotifyStateChanged();
             }
+
         }
 
         public void GenerateInterviewDoc(int interviewId)
@@ -190,6 +241,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             IsEditMode = false;
             IsAddMode = false;
             ErrorMessage = null;
+            NotifyStateChanged();
         }
     }
 }
