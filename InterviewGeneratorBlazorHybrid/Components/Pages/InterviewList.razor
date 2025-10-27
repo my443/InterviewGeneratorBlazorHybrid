@@ -11,15 +11,6 @@
     </button>
 </div>
 
-
-@if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @ViewModel.ErrorMessage
-        <button type="button" class="btn-close" @onclick="() => ViewModel.ErrorMessage = null"></button>
-    </div>
-}
-
 <hr />
 
 @if (ViewModel.Interviews.Count == 0)
@@ -45,7 +36,7 @@ else
                 <tr>
                     <td>@interview.Id</td>
                     <td>@interview.InterviewName</td>
-                    <td>@interview.DateCreated.ToString("MMM dd, yyyy hh:mm tt")</td>
+                    <td>@interview.DateCreated.ToString("MMM dd, yyyy")</td>
                     <td>
                         @if (interview.IsActive)
                         {

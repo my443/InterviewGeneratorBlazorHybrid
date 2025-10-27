@@ -6,14 +6,32 @@
 @inject AppDbContextFactory ContextFactory
 @inject InterviewViewModel ViewModel
 
-<h3>Build Interview</h3>@ViewModel.IsAddMode @ViewModel.IsEditMode
+<h3>Build Interview</h3> 
 
+@if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @ViewModel.SuccessMessage
+        <button type="button" class="btn-close" @onclick="() => ViewModel.SuccessMessage = null"></button>
+    </div>
+}
+
+
+@if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewModel.ErrorMessage
+        <button type="button" class="btn-close" @onclick="() => ViewModel.ErrorMessage = null"></button>
+    </div>
+}
+@* 
 <ul>
-    <li>@ViewModel.InterviewName</li>
-    <li>@ViewModel.InterviewDate</li>
-    <li>@ViewModel.InterviewIsActiveString</li>
+    <li>IsAddMode: @ViewModel.IsAddMode</li>
+    <li>IsEditMode: @ViewModel.IsEditMode</li>
+    <li>IsConstructMode: @ViewModel.IsConstructMode</li>
+</ul> *@
 
-</ul>
+
 @* <button class="btn btn-success mb-3" @onclick="SaveInterview"
         disabled="@(string.IsNullOrWhiteSpace(ViewModel.InterviewName) || !ViewModel.InterviewQuestions.Any())">
     Save Interview
@@ -26,9 +44,22 @@
     </button>
 </div> *@
 
+@if(!ViewModel.IsEditMode && !ViewModel.IsConstructMode)
+{
+    <InterviewList />
+}
 
-<InterviewList />
+@if(ViewModel.IsEditMode)
+{
+    <InterviewEdit />
+}
 
-<InterviewEdit />
+@if (ViewModel.IsConstructMode)
+{
+    <InterviewConstruction />
+}
 
-<InterviewConstruction />
+
+
+
+

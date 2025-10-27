@@ -1,8 +1,6 @@
 using InterviewGeneratorBlazorHybrid.Data;
 using InterviewGeneratorBlazorHybrid.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace InterviewGeneratorBlazorHybrid.ViewModels
 {
@@ -40,6 +38,9 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         private string? _errorMessage;
         public string? ErrorMessage { get => _errorMessage; set => SetProperty(ref _errorMessage, value); }
 
+        private string? _successMessage;
+        public string? SuccessMessage { get => _successMessage; set => SetProperty(ref _successMessage, value); }
+
         private int? _selectedCategoryId;
         public int? SelectedCategoryId { get => _selectedCategoryId; set => SetProperty(ref _selectedCategoryId, value); }
 
@@ -76,6 +77,9 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         private bool _isAddMode = false;
         public bool IsAddMode { get => _isAddMode; set => SetProperty(ref _isAddMode, value); }
+
+        private bool _isConstructMode = false;
+        public bool IsConstructMode { get => _isConstructMode; set => SetProperty(ref _isConstructMode, value); }
 
         private bool _databaseIsAvailable = false;
         public bool DatabaseIsAvailable { get => _databaseIsAvailable; set => SetProperty(ref _databaseIsAvailable, value); }
@@ -123,7 +127,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         }
 
         public void AddNewInterview()
-        { 
+        {
             InterviewName = "<<New Interview>>";
             InterviewDate = DateTime.Today;
             IsAddMode = true;
@@ -139,7 +143,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
             _context.Interviews.Add(interview);
             _context.SaveChanges();
-            
+
             Interview = interview;
             LoadInterviews();
             NotifyStateChanged();
@@ -153,6 +157,12 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             //Interview.IsActive = InterviewIsActive;
 
             _context.SaveChanges();
+            
+            if (!IsConstructMode)
+            {
+                SuccessMessage = "Interview Name, Date and Status Updated.";
+            }
+
             NotifyStateChanged();
         }
         public void LoadInterviewById(int interviewId)
@@ -189,12 +199,25 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             NotifyStateChanged();
         }
 
+        public void EnterConstructionMode()
+        {
+            LoadInterviewById(Interview.Id);
+            IsConstructMode = true;
+            NotifyStateChanged();
+        }
+
+        public void ExitConstructionMode()
+        {
+            IsConstructMode = false;
+            NotifyStateChanged();
+        }
+
         public void AddQuestionToInterview()
         {
             if (SelectedQuestionId == null) return;
 
             Question? question = AvailableQuestions.FirstOrDefault(q => q.Id == SelectedQuestionId);
-            
+
             if (question != null && !Interview.Questions.Any(q => q.Id == question.Id))
             {
                 Interview.Questions.Add(question);
@@ -229,7 +252,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             {
                 DatabaseIsAvailable = false;
             }
-            else { 
+            else
+            {
                 DatabaseIsAvailable = integrityCheck.IsValidDatabase();
             }
             return DatabaseIsAvailable;
@@ -238,9 +262,13 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public void ResetForm()
         {
             Interview = new Interview();
+
             IsEditMode = false;
             IsAddMode = false;
+            IsConstructMode = false;
+
             ErrorMessage = null;
+            SuccessMessage = null;
             NotifyStateChanged();
         }
     }
