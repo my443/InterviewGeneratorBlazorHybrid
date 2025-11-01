@@ -13,7 +13,7 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
             _contextFactory = contextFactory;
         }
        
-        public void GenerateInterviewDoc(int interviewId)
+        public MemoryStream GenerateInterviewDoc(int interviewId)
         {
             using var context = _contextFactory.CreateDbContext();
             var interview = context.Interviews
@@ -22,11 +22,19 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
                 .FirstOrDefault(i => i.Id == interviewId);
 
             string templatePath = @"c:\temp\Interview Guide Template.docx";
-            string outputPath = @"c:\temp\Interview Guide Output.docx";
+            string outputPath = @"c:\temp\Output Interview.docx"; ;
 
-            File.Copy(templatePath, outputPath, true);
+            // Read the template into a byte[] and initialize a MemoryStream from it.
+            // This keeps everything in-memory (no temp file).
+            var templateFileBytes = File.ReadAllBytes(templatePath);
 
-            using (var doc = WordprocessingDocument.Open(outputPath, true))
+            var inMemoryFileBytes = new MemoryStream();
+            inMemoryFileBytes.Write(templateFileBytes, 0, templateFileBytes.Length);
+            inMemoryFileBytes.Position = 0;
+
+            //var inMemoryFileBytes = new MemoryStream(templateFileBytes);
+
+            using (var doc = WordprocessingDocument.Open(inMemoryFileBytes, true))
             {
 
                 var body = doc.MainDocumentPart!.Document.Body!;
@@ -51,7 +59,9 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
                     }
                 }
 
-                doc.MainDocumentPart.Document.Save();
+                // Reset position so caller can read/serve the stream from the start
+                inMemoryFileBytes.Position = 0;
+                return inMemoryFileBytes;
             }
         }
     }

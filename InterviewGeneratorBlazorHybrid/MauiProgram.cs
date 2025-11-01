@@ -1,4 +1,5 @@
-﻿using InterviewGeneratorBlazorHybrid.Data;
+﻿using CommunityToolkit.Maui;
+using InterviewGeneratorBlazorHybrid.Data;
 using InterviewGeneratorBlazorHybrid.ViewModels;
 using Microsoft.Extensions.Logging;
 
@@ -11,6 +12,7 @@ namespace InterviewGeneratorBlazorHybrid
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

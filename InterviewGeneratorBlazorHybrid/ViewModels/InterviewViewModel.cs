@@ -239,10 +239,10 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         }
 
-        public void GenerateInterviewDoc(int interviewId)
+        public MemoryStream GenerateInterviewDoc(int interviewId)
         {
             var wordHelper = new Helpers.MSWordHelper(_contextFactory);
-            wordHelper.GenerateInterviewDoc(interviewId);
+            return wordHelper.GenerateInterviewDoc(interviewId);
         }
 
         public bool IsDatabaseAvailable()

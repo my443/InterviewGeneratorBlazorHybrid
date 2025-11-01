@@ -29,11 +29,6 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
             ViewModel.AddQuestionToInterview();
             ViewModel.SaveInterview();
         }
-        private void SaveInterview()
-        {
-            ViewModel.SaveInterview();
-            // Optionally, clear the form or show a message here
-        }
 
         private void DeleteQuestion(int questionId)
         {
