@@ -51,9 +51,17 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
             SuccessMessage = string.Empty;
             try
             {
+                string todaysdate = DateTime.Now.ToString("yyyy-MM-dd");
+
+                var docxTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                    {
+                        // Windows: extension works
+                        { DevicePlatform.WinUI, new[] { ".docx" } },
+
+                    });
                 //using MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes("Hello from the Community Toolkit!"));
                 using MemoryStream stream = ViewModel.GenerateInterviewDoc(interview.Id);
-                var result = await FileSaver.Default.SaveAsync("test.txt", stream, new CancellationToken());
+                var result = await FileSaver.Default.SaveAsync($"{todaysdate}-Output Document.docx", stream, CancellationToken.None);
 
                 if (result != null && (result.IsSuccessful))
                 {
@@ -62,8 +70,6 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
                 DisplayErrorMessage();
             }
             //finally
