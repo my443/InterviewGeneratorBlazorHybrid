@@ -201,6 +201,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         public void EnterConstructionMode()
         {
+            SaveInterview();
+            ResetMessages();
             LoadInterviewById(Interview.Id);
             IsConstructMode = true;
             NotifyStateChanged();
@@ -208,6 +210,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         public void ExitConstructionMode()
         {
+            SaveInterview();
             IsConstructMode = false;
             NotifyStateChanged();
         }
@@ -259,8 +262,15 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             return DatabaseIsAvailable;
         }
 
+        public void ResetMessages()
+        {
+            ErrorMessage = string.Empty;
+            SuccessMessage = string.Empty;
+            NotifyStateChanged();
+        }   
         public void ResetForm()
         {
+            SaveInterview();
             Interview = new Interview();
 
             IsEditMode = false;
