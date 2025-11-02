@@ -102,6 +102,13 @@ else
         {
             ViewModel.ChangeCategory(ViewModel.CategoryId);
         }
+
+        ViewModel.LoadCategories();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ViewModel.LoadCategories();
     }
 
     private async Task OnCategoryChanged(ChangeEventArgs e)
