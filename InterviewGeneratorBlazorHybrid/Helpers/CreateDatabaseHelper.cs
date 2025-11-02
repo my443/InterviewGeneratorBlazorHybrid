@@ -1,11 +1,6 @@
 ﻿using InterviewGeneratorBlazorHybrid.Data;
-using InterviewGeneratorBlazorHybrid.ViewModels;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using InterviewGeneratorBlazorHybrid.ViewModels;
-
+using InterviewGeneratorBlazorHybrid.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace InterviewGeneratorBlazorHybrid.Helpers
 {
@@ -27,10 +22,13 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
             // Ensure the database is deleted, and then is created if needed.
             context.Database.EnsureDeletedAsync();
             context.Database.EnsureCreated();
+        }
 
-            //_viewModelStore.CategoryViewModel.ResetViewModel();
-            //_viewModelStore.QuestionViewModel.ResetViewModel();
-            //_viewModelStore.InterviewViewModel.ResetViewModel();
+        public void AddSampleData() { 
+            using var context = _contextFactory.CreateDbContext();
+
+            context.Database.ExecuteSqlRaw(SampleDatabaseHelper.CategoriesInsertQuery);
+            context.Database.ExecuteSqlRaw(SampleDatabaseHelper.QuestionsInsertQuery);
         }
     }
 }

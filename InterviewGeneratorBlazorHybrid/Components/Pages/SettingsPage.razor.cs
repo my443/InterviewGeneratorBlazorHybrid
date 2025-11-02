@@ -102,6 +102,16 @@ public partial class SettingsPage
         }
     }
 
+    public async Task CreateSampleDatabase() {
+      
+        await AddNewDatabase();
+
+        // Add Sample Data
+        CreateDatabaseHelper dbHelper = new CreateDatabaseHelper(_appDbFactory);
+        dbHelper.AddSampleData();
+        ResetViewModels();
+    }
+
     private void DisplaySuccessMessage(string selectedPath)
     {
         SuccessMessage = "Database file selected successfully.";
