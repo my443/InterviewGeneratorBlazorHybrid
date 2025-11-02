@@ -1,4 +1,5 @@
 @inject InterviewGeneratorBlazorHybrid.ViewModels.InterviewViewModel ViewModel
+@inject NavigationManager Navigation
 
 @* Reusable horizontal navigation buttons *@
 @* Responsive navigation: horizontal on large screens, dropdown on small screens *@
@@ -12,7 +13,7 @@
     <NavLink class="btn btn-primary" href="questions">
         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Questions
     </NavLink>
-    <NavLink class="btn btn-primary" @onclick="ViewModel.ResetForm">
+    <NavLink class="btn btn-primary" @onclick="GoToInterviewsList">
         <span class="bi bi-list-nested-nav-menu" aria-hidden="true" ></span> Interview List
     </NavLink>
     <NavLink class="btn btn-primary" href="settings" aria-label="Interview settings" title="Interview settings">
@@ -44,7 +45,7 @@
                 </NavLink>
             </li>
             <li>
-                <NavLink class="dropdown-item" @onclick="ViewModel.ResetForm">
+                <NavLink class="dropdown-item" @onclick="GoToInterviewsList">
                     <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Interview List
                 </NavLink>
             </li>
