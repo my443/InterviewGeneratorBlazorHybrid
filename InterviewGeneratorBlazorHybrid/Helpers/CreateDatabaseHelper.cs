@@ -29,6 +29,8 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
 
             context.Database.ExecuteSqlRaw(SampleDatabaseHelper.CategoriesInsertQuery);
             context.Database.ExecuteSqlRaw(SampleDatabaseHelper.QuestionsInsertQuery);
+            context.Database.ExecuteSqlRaw(SampleDatabaseHelper.InterviewsInsertQuery);
+            context.Database.ExecuteSqlRaw(SampleDatabaseHelper.InterviewQuestionsInsertQuery);
         }
     }
 }

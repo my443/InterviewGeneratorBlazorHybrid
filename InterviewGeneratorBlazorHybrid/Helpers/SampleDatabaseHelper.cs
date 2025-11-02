@@ -163,5 +163,22 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
           ('Can you describe a time when you advocated for equity or fairness in a situation?', ' ', 10),
           ('Describe a time when your actions helped someone from a marginalized or underrepresented group.', ' ', 10),
           ('Tell me about a time when you created a sense of belonging for someone who felt excluded.', ' ', 10);";
+
+        public static string InterviewsInsertQuery = @"
+            INSERT INTO ""main"".""Interviews"" (""Id"", ""InterviewName"", ""DateCreated"", ""IsActive"") VALUES (1, 'DSP Interview for Group Living', '2025-11-02 00:00:00', 1);
+            INSERT INTO ""main"".""Interviews"" (""Id"", ""InterviewName"", ""DateCreated"", ""IsActive"") VALUES (2, 'Night Sleep DSP Interview', '2025-11-02 00:00:00', 1);";
+
+        public static string InterviewQuestionsInsertQuery = @"
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (1, 1);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (1, 10);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (1, 68);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (1, 117);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (2, 1);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (2, 105);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (2, 100);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (2, 10);
+            INSERT INTO ""main"".""InterviewQuestion"" (""InterviewsId"", ""QuestionsId"") VALUES (2, 67);
+            ";
+
     }
 }
