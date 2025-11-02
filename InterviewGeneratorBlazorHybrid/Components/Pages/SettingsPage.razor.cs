@@ -1,4 +1,8 @@
-﻿using InterviewGeneratorBlazorHybrid.Data;
+﻿using CommunityToolkit.Maui.Storage;
+using InterviewGeneratorBlazorHybrid.Data;
+using InterviewGeneratorBlazorHybrid.Helpers;
+using InterviewGeneratorBlazorHybrid.Models;
+using InterviewGeneratorBlazorHybrid.ViewModels;
 
 namespace InterviewGeneratorBlazorHybrid.Components.Pages;
 
@@ -40,11 +44,12 @@ public partial class SettingsPage
 
                 if (!_appDbIntegrityCheck.IsValidDatabase())
                 {
-                    DisplayErrorMessage();
+                    DisplayErrorMessage("The selected file is not a valid database. Please select a different file.");
                 }
                 else
                 {
                     DisplaySuccessMessage(selectedPath);
+                    ResetViewModels();
                 }
 
 
@@ -55,12 +60,45 @@ public partial class SettingsPage
         }
         catch (Exception ex)
         {
-            DisplayErrorMessage();
+            DisplayErrorMessage("The selected file is not a valid database. Please select a different file.");
             StateHasChanged();
         }
         finally
         {
             _isPicking = false;
+        }
+    }
+
+    public async Task AddNewDatabase()
+    {
+        SuccessMessage = string.Empty;
+        try
+        {
+            var docxTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                    {
+                        // Windows: extension works
+                        { DevicePlatform.WinUI, new[] { ".db" } },
+
+                    });
+            //using MemoryStream stream = new MemoryStream(Encoding.Default.GetBytes("Hello from the Community Toolkit!"));
+            using MemoryStream stream = new MemoryStream();
+            var result = await FileSaver.Default.SaveAsync($"New Database.db", stream, CancellationToken.None);
+
+            if (result != null && (result.IsSuccessful))
+            {
+                // Create the ViewModelStore to pass to the CreateDatabaseHelper
+                //var viewModelStore = new ViewModelStore(CategoryViewModel, QuestionViewModel, InterviewViewModel);
+                CreateDatabaseHelper dbHelper = new CreateDatabaseHelper(_appDbFactory);
+                dbHelper.CreateDatabase(result.FilePath);
+
+                ResetViewModels();
+
+                DisplaySuccessMessage(result.FilePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            DisplayErrorMessage("There was an error. Selected file could not be created.");
         }
     }
 
@@ -72,10 +110,24 @@ public partial class SettingsPage
         DisplayPath = selectedPath;
     }
 
-    private void DisplayErrorMessage()
+    private void DisplayErrorMessage(string errorMessage)
     {
-        ErrorMessage = "The selected file is not a valid database. Please select a different file.";
+        ErrorMessage = errorMessage;
         DisplayPath = "Not Set";
         Preferences.Set("DatabaseFilePath", "Not Set");
+    }
+
+    private void ClearMessages()
+    {
+        GeneralMessage = string.Empty;
+        ErrorMessage = string.Empty;
+        SuccessMessage = string.Empty;
+    }
+
+    private void ResetViewModels()
+    {
+        CategoryViewModel.ResetViewModel();
+        QuestionViewModel.ResetViewModel();
+        InterviewViewModel.ResetViewModel();
     }
 }

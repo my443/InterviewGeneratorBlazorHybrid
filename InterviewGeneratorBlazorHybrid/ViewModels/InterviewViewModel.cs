@@ -157,7 +157,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             //Interview.IsActive = InterviewIsActive;
 
             _context.SaveChanges();
-            
+
             if (!IsConstructMode)
             {
                 SuccessMessage = "Interview Name, Date and Status Updated.";
@@ -270,6 +270,33 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             ErrorMessage = null;
             SuccessMessage = null;
             NotifyStateChanged();
+        }
+
+        public void ResetViewModel()
+        {
+            //_contextFactory = new AppDbContextFactory();
+            // Reset properties to default values
+            _context = _contextFactory.CreateDbContext();
+
+            _interviews = new List<Interview>();            
+            _interview = new Interview();
+            _categories = new List<Category>();
+            _availableQuestions = new List<Question>();
+            _errorMessage = string.Empty;
+            _successMessage = string.Empty;
+            _selectedCategoryId = null;
+            _selectedQuestionId = null;
+            _selectedInterviewId = 0;
+            _interviewName = string.Empty;
+            _interviewDate = DateTime.Today;
+            _interviewIsActive = true;
+            _isEditMode = false;
+            _isAddMode = false;
+            _isConstructMode = false;
+            _databaseIsAvailable = false;
+
+            LoadCategories();
+            LoadInterviews();
         }
     }
 }

@@ -16,15 +16,15 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         public string? ErrorMessage { get; set; }
         public List<Category> Categories { get; set; } = new();
         public Category Category { get; set; }
-        public int CategoryId 
-        { 
-            get => _categoryId; 
-            set 
-            { 
-                if (_categoryId != value) 
-                { 
-                    ChangeCategory(value); 
-                } 
+        public int CategoryId
+        {
+            get => _categoryId;
+            set
+            {
+                if (_categoryId != value)
+                {
+                    ChangeCategory(value);
+                }
             }
         }
         public bool IsAddMode { get; set; } = false;
@@ -64,7 +64,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             };
         }
 
-        public void AddNewQuestion() {
+        public void AddNewQuestion()
+        {
             IsEditMode = true;
             IsAddMode = true;
             QuestionModel = new Question();
@@ -126,14 +127,6 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             ResetForm();
         }
 
-        public void ResetForm()
-        {
-            QuestionModel = new Question { CategoryId = _categoryId };
-            IsEditMode = false;
-            IsAddMode = false;
-            ErrorMessage = null;            
-        }
-
         public void ChangeCategory(int categoryId)
         {
             _categoryId = categoryId;
@@ -141,6 +134,31 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             LoadQuestions();
             Category = Categories.FirstOrDefault(c => c.Id == _categoryId);
             ResetForm();
+        }
+
+        public void ResetForm()
+        {
+            QuestionModel = new Question { CategoryId = _categoryId };
+            IsEditMode = false;
+            IsAddMode = false;
+            ErrorMessage = null;
+        }
+        public void ResetViewModel()
+        {
+            //_contextFactory = new AppDbContextFactory();
+            // Reset properties to default values
+            _context = _contextFactory.CreateDbContext();
+            _categoryId = 0;
+
+            Questions = new List<Question>();
+            QuestionModel = new Question();
+            IsEditMode = false;
+            ErrorMessage = string.Empty;
+            Categories = new List<Category>();
+            Category = new Category();
+
+            LoadCategories();
+
         }
     }
 }

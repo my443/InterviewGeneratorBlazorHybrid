@@ -1,6 +1,7 @@
 ﻿using InterviewGeneratorBlazorHybrid.Data;
 using InterviewGeneratorBlazorHybrid.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace InterviewGeneratorBlazorHybrid.ViewModels
 {
@@ -9,7 +10,6 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         private readonly AppDbContextFactory _contextFactory;
         private AppDbContext _context;
 
-        private readonly string _sqliteDbPath;
         public List<Category> Categories { get; set; } = new();
         public Category CategoryModel { get; set; } = new();
         public bool IsEditMode { get; set; } = false;
@@ -106,6 +106,18 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             IsEditMode = false;
             IsAddMode = false;
             ErrorMessage = null;
+        }
+
+        public void ResetViewModel()
+        {
+            //_contextFactory = new AppDbContextFactory();
+            _context = _contextFactory.CreateDbContext();
+            Categories = new List<Category>();
+            CategoryModel = new Category();
+            IsEditMode = false;
+            IsAddMode = false;
+            ErrorMessage = string.Empty;
+            LoadCategories();
         }
     }
 }

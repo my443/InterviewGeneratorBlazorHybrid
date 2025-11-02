@@ -1,8 +1,12 @@
 ﻿@page "/settings"
 @using InterviewGeneratorBlazorHybrid.Data
+@using ViewModels
 
 @inject NavigationManager NavigationManager
 @inject AppDbContextFactory ContextFactory
+@inject CategoryViewModel CategoryViewModel
+@inject InterviewViewModel InterviewViewModel
+@inject QuestionViewModel QuestionViewModel
 
 <h3>Interview Generator Settings</h3>
 
@@ -13,7 +17,7 @@
 <p>Current Database: <b>@DisplayPath</b></p>
 <div class="container text-center my-5">
     <div class="d-flex justify-content-between px-5" role="group" aria-label="Database options">
-        <button class="btn btn-success flex-fill mx-2">Add New Database</button>
+        <button class="btn btn-success flex-fill mx-2" @onclick="AddNewDatabase">Add New Database</button>
         <button class="btn btn-success flex-fill mx-2" @onclick="SelectDifferentDatabase">Select A Current Database</button>
         <button class="btn btn-success flex-fill mx-2">Create Sample Database</button>
     </div>
