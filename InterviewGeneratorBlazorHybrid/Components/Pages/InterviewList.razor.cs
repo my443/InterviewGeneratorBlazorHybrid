@@ -32,6 +32,7 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
             ViewModel.IsAddMode = false;
             ViewModel.IsEditMode = true;
             ViewModel.LoadInterviewById(interview.Id);
+            Navigation.NavigateTo($"/interview");
         }
 
         private async Task DeleteInterviewWithConfirm(Interview interview)

@@ -7,6 +7,8 @@
 @inject InterviewViewModel ViewModel
 
 <h3>Build Interview</h3> 
+Edit Mode: @ViewModel.IsEditMode
+Construct Mode: @ViewModel.IsConstructMode
 
 @if (!string.IsNullOrEmpty(ViewModel.SuccessMessage))
 {
