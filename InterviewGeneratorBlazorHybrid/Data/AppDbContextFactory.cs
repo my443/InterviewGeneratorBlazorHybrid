@@ -23,7 +23,15 @@ namespace InterviewGeneratorBlazorHybrid.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-            string connectionString = $"Data Source={Preferences.Get("DatabaseFilePath", "")}";
+            var dbPath = Preferences.Get("DatabaseFilePath", string.Empty);
+
+            // If no path is set in preferences, default to a file on the desktop
+            if (string.IsNullOrWhiteSpace(dbPath)) {
+                string desktopDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                dbPath = Path.Combine(desktopDirectory, "interviews.db");
+            }
+
+            string connectionString = $"Data Source={dbPath}";
             optionsBuilder.UseSqlite(connectionString);
 
             var context = new AppDbContext(optionsBuilder.Options);
