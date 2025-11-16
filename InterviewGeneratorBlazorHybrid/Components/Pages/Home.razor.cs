@@ -15,7 +15,7 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
         private void AddNewInterview()
         {
             ViewModel.AddNewInterview();
-            Navigation.NavigateTo($"/interview/{ViewModel.Interview.Id}");
+            Navigation.NavigateTo($"/interview");
         }
     }
 }

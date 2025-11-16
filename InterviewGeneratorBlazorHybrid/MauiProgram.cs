@@ -28,10 +28,10 @@ namespace InterviewGeneratorBlazorHybrid
 
             builder.Services.AddMauiBlazorWebView();
 
-//#if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+#if DEBUG
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
-//#endif
+#endif
 
             return builder.Build();
         }
