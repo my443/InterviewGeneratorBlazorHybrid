@@ -83,11 +83,12 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         private bool _databaseIsAvailable = false;
         public bool DatabaseIsAvailable { get => _databaseIsAvailable; set => SetProperty(ref _databaseIsAvailable, value); }
-
+        public string InterviewTemplatePath { get; set; }
 
         public InterviewViewModel(AppDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
+            InterviewTemplatePath = Preferences.Get("TemplateDocumentPath", string.Empty);
 
             if (!IsDatabaseAvailable())
             {
@@ -267,7 +268,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
             NotifyStateChanged();
-        }   
+        }
         public void ResetForm()
         {
             SaveInterview();
@@ -288,7 +289,7 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             // Reset properties to default values
             _context = _contextFactory.CreateDbContext();
 
-            _interviews = new List<Interview>();            
+            _interviews = new List<Interview>();
             _interview = new Interview();
             _categories = new List<Category>();
             _availableQuestions = new List<Question>();
@@ -307,6 +308,13 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
             LoadCategories();
             LoadInterviews();
+        }
+
+        internal void UpdateTemplatePath(string selectedPath)
+        {
+            Preferences.Set("TemplateDocumentPath", selectedPath);
+            InterviewTemplatePath = Preferences.Get("TemplateDocumentPath", string.Empty);
+            NotifyStateChanged();
         }
     }
 }

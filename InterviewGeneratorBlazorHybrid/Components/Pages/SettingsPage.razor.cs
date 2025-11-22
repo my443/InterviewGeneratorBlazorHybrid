@@ -69,6 +69,46 @@ public partial class SettingsPage
         }
     }
 
+    private async Task SelectDifferentDocTemplate()
+    {
+        if (_isPicking)
+            return;
+
+        _isPicking = true;
+        try
+        {
+            var result = await FilePicker.Default.PickAsync();
+            if (result != null)
+            {
+                
+                var selectedPath = result.FullPath ?? result.FileName;                
+                Preferences.Set("TemplateDocumentPath", selectedPath);
+                InterviewViewModel.UpdateTemplatePath(selectedPath);
+
+                // TODO - DO AN INTEGRITY CHECK ON THE TEMPLATE FILE
+
+                //if (!_appDbIntegrityCheck.IsValidDatabase())
+                //{
+                //    DisplayErrorMessage("The selected file is not a valid database. Please select a different file.");
+                //}
+                //else
+                //{
+                //    DisplaySuccessMessage(selectedPath);
+                //    ResetViewModels();
+                //}
+            }
+        }
+        catch (Exception ex)
+        {
+            DisplayErrorMessage("There was a problem with the selected template file. Please select a different file.");
+            StateHasChanged();
+        }
+        finally
+        {
+            _isPicking = false;
+        }
+    }
+
     public async Task AddNewDatabase()
     {
         SuccessMessage = string.Empty;

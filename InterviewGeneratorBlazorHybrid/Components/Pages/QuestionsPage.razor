@@ -73,8 +73,10 @@ else
                         <strong>@q.Text</strong> <br />
                     </span>
                     <span>
-                        <button class="btn btn-sm btn-info me-1" @onclick="() => ViewModel.EditQuestion(q)">Edit</button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => ViewModel.DeleteQuestion(q.Id)">Delete</button>
+                        <div class="d-flex flex-nowrap align-items-center gap-2">
+                            <button class="btn btn-sm btn-info me-1" @onclick="() => ViewModel.EditQuestion(q)">Edit</button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => ViewModel.DeleteQuestion(q.Id)">Delete</button>
+                        </div>
                     </span>
                 </li>
             }

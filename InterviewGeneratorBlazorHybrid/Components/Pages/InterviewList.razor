@@ -54,15 +54,17 @@ else
                     </td>
                     <td>@interview.Questions.Count</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" @onclick="() => GenerateInterview(interview)">
-                            Save Document
-                        </button>
-                        <button class="btn btn-sm btn-info" @onclick="() => EditInterview(interview)">
-                             Edit
-                        </button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteInterviewWithConfirm(interview)">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
+                        <div class="d-flex flex-nowrap align-items-center gap-2">
+                            <button class="btn btn-sm btn-primary" @onclick="() => GenerateInterview(interview)">
+                                Save Document
+                            </button>
+                            <button class="btn btn-sm btn-info" @onclick="() => EditInterview(interview)">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteInterviewWithConfirm(interview)">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </div>
                     </td>
                 </tr>
             }

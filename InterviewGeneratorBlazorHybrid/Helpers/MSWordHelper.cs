@@ -8,9 +8,11 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
     public class MSWordHelper
     {
         private readonly AppDbContextFactory _contextFactory;
+        private string _templatePath;
         public MSWordHelper(AppDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
+            _templatePath = Preferences.Get("TemplateDocumentPath", string.Empty);
         }
        
         public MemoryStream GenerateInterviewDoc(int interviewId)
@@ -21,7 +23,7 @@ namespace InterviewGeneratorBlazorHybrid.Helpers
                 .ThenInclude(q => q.Category)
                 .FirstOrDefault(i => i.Id == interviewId);
 
-            string templatePath = @"c:\temp\Interview Guide Template.docx";
+            string templatePath = _templatePath;
             string outputPath = @"c:\temp\Output Interview.docx"; ;
 
             // Read the template into a byte[] and initialize a MemoryStream from it.

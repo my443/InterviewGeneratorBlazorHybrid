@@ -15,11 +15,27 @@
 <p><span class="alert-success">@SuccessMessage</span></p>
 
 <p>Current Database: <b>@DisplayPath</b></p>
+<p>Current Interview Document Template: <b>@InterviewViewModel.InterviewTemplatePath</b></p>
 <div class="container text-center my-5">
     <div class="d-flex justify-content-between px-5" role="group" aria-label="Database options">
-        <button class="btn btn-success flex-fill mx-2" @onclick="AddNewDatabase">Add New Database</button>
-        <button class="btn btn-success flex-fill mx-2" @onclick="SelectDifferentDatabase">Select A Database</button>
-        <button class="btn btn-success flex-fill mx-2" @onclick="CreateSampleDatabase">Create Sample Database</button>
+        <div class="row g-3">
+            <!-- First Row -->
+            <div class="col-12 col-sm-6">
+                <!-- w-100 makes the button take up the full column width -->
+                <button class="btn btn-success w-100" @onclick="AddNewDatabase">Add New Database</button>
+            </div>
+            <div class="col-12 col-sm-6">
+                <button class="btn btn-success w-100" @onclick="CreateSampleDatabase">Create Sample Database</button>
+            </div>
+
+            <!-- Second Row -->
+            <div class="col-12 col-sm-6">
+                <button class="btn btn-success w-100" @onclick="SelectDifferentDatabase">Select A Database</button>
+            </div>
+            <div class="col-12 col-sm-6">
+                <button class="btn btn-success w-100" @onclick="SelectDifferentDocTemplate">Select A Interview Document Template</button>
+            </div>
+        </div>
     </div>
 </div>
 
