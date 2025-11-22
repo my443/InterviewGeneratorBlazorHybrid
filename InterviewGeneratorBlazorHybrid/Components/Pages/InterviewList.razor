@@ -5,10 +5,10 @@
 @inject NavigationManager Navigation
 
 <h3>Interview Listing</h3>
-Edit Mode: @ViewModel.IsEditMode
-Construct Mode: @ViewModel.IsConstructMode
+@* Edit Mode: @ViewModel.IsEditMode
+Construct Mode: @ViewModel.IsConstructMode *@
 
-<p><span class="alert-danger">@ErrorMessage</span></p>
+<p><span class="alert-danger">@((MarkupString)ErrorMessage)</span></p>
 <p><span class="alert-success">@SuccessMessage</span></p>
 <div class="mb-3">
     <button class="btn btn-success" @onclick="AddNewInterview">

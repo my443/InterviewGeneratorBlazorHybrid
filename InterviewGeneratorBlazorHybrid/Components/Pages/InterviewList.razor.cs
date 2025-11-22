@@ -81,7 +81,8 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
 
         private void DisplayErrorMessage()
         {
-            ErrorMessage = "The file couldn't be saved. There was an error. Please try again.";
+            ErrorMessage = "<p class=\"alert-danger\">The file couldn't be saved. There was an error. Please try again." +
+                            "<br/>If the problem persists, go to <u>Settings</u> to select a different template file.</p>";
         }
 
         private void DisplaySuccessMessage(string savedPath)
