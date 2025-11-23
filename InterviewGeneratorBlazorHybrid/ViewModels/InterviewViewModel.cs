@@ -156,7 +156,9 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
             Interview.InterviewName = InterviewName;
             Interview.DateCreated = InterviewDate;
             //Interview.IsActive = InterviewIsActive;
-
+            if (_context == null) {
+                return;
+            }
             _context.SaveChanges();
 
             if (!IsConstructMode)
