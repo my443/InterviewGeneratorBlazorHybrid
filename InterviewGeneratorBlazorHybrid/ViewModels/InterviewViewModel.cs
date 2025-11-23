@@ -170,6 +170,18 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
         }
         public void LoadInterviewById(int interviewId)
         {
+
+            // Force a Detach if the entity is currently tracked. This is just in case you deleted a question upstream. 
+            if (Interview != null)
+            {
+                // Ensure the entry is being tracked before trying to change its state
+                if (_context.Entry(Interview).State != Microsoft.EntityFrameworkCore.EntityState.Detached)
+                {
+                    // Detach the existing entity, forcing EF to load a fresh copy from the database.
+                    _context.Entry(Interview).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                }
+            }
+
             Interview = _context.Interviews
                 .Include(i => i.Questions)
                 .ThenInclude(q => q.Category)
@@ -204,6 +216,8 @@ namespace InterviewGeneratorBlazorHybrid.ViewModels
 
         public void EnterConstructionMode()
         {
+            LoadCategories();
+            LoadQuestionsForCategory();
             SaveInterview();
             ResetMessages();
             LoadInterviewById(Interview.Id);
