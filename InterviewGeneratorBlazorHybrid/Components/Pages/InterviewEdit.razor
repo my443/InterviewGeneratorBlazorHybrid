@@ -4,7 +4,16 @@
 
 @inject AppDbContextFactory ContextFactory
 @inject InterviewViewModel ViewModel
+@if (!ViewModel.IsConstructMode)
+{
+    <button type="button" class="btn btn-primary me-2" @onclick="ViewModel.EnterConstructionMode">Add and Remove Questions</button>
+}
+else
+{
+    <button type="button" class="btn btn-primary me-2" @onclick="ViewModel.ExitConstructionMode">Edit Interview Name, Date & Status</button>
+}
 
+<button type="button" class="btn btn-secondary" @onclick="ViewModel.ResetForm">Return To Interview List</button>
 <EditForm Model="@ViewModel.Interview" OnValidSubmit="@(() => ViewModel.SaveInterview())">
     @if (!ViewModel.IsConstructMode)
     {
@@ -23,17 +32,8 @@
                 <option value="false">Inactive</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary me-2">Update Interview Name, Date & Status</button>
-    }
-    @if (!ViewModel.IsConstructMode)
-    {
-        <button type="button" class="btn btn-primary me-2" @onclick="ViewModel.EnterConstructionMode">Add and Remove Questions</button>
-    }
-    else
-    {
-        <button type="button" class="btn btn-primary me-2" @onclick="ViewModel.ExitConstructionMode">Edit Interview Name, Date & Status</button>
+        <button type="submit" class="btn btn-primary me-2">Save</button>
     }
 
-    <button type="button" class="btn btn-secondary" @onclick="ViewModel.ResetForm">Return To Interview List</button>
 </EditForm>
 

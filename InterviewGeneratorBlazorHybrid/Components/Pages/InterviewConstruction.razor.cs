@@ -13,7 +13,7 @@ namespace InterviewGeneratorBlazorHybrid.Components.Pages
             {
                 ViewModel.SelectedCategoryId = catId;
                 ViewModel.LoadQuestionsForCategory();
-                ViewModel.SelectedQuestionId = null;
+                ViewModel.SelectedQuestionId = ViewModel.AvailableQuestions.Select(q => q.Id).FirstOrDefault();
             }
         }
         private void OnQuestionChanged(ChangeEventArgs e)

@@ -6,9 +6,9 @@
 @inject InterviewViewModel ViewModel
 
 <div class="mb-3">
-    <label>Select Category</label>
+    <label>Select Core Competency</label>
     <select class="form-select" @onchange="OnCategoryChanged">
-        <option value="">-- Select Category --</option>
+        <option value="">-- Select Core Competency --</option>
         @foreach (var cat in ViewModel.Categories)
         {
             <option value="@cat.Id" selected="@(ViewModel.SelectedCategoryId == cat.Id)">
